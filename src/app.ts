@@ -5,7 +5,10 @@ import logger from 'morgan';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import 'reflect-metadata';
+import { createConnection } from 'typeorm';
 import router from './routes';
+import * as db from './database/config';
 
 const app = express();
 app.use(logger('dev'));
@@ -33,10 +36,14 @@ app.set("port", process.env.PORT || 3001);
 
 const server = app.listen(app.get('port'), () => {
   console.log(
-    "App is running on http://localhost:%d in %s node",
+    "Server is running on http://localhost:%d in %s node",
     app.get("port"),
     app.get("env")
   )
 })
+
+createConnection(db.config).then(async connection => {
+  console.log("Successfully connected to database");
+}).catch(error => console.log("TypeORM connection error: ", error));
 
 export default app;
