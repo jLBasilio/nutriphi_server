@@ -1,26 +1,26 @@
-'use strict';
+"use strict";
+import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
+import cors from "cors";
 import express from "express";
-import path from 'path';
-import logger from 'morgan';
-import cookieParser from 'cookie-parser';
-import bodyParser from 'body-parser';
-import cors from 'cors';
-import 'reflect-metadata';
-import { createConnection } from 'typeorm';
-import router from './routes';
-import * as db from './database/config';
+import logger from "morgan";
+import path from "path";
+import "reflect-metadata";
+import { createConnection } from "typeorm";
+import * as db from "./database/config";
+import router from "./routes";
 
 const app = express();
-app.use(logger('dev'));
+app.use(logger("dev"));
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, "public")));
 
-app.use('/api', router);
+app.use("/api", router);
 
-app.use('*', (req, res, next) => {
+app.use("*", (req, res, next) => {
   let err: any;
   err = new Error();
   err.status = 404;
@@ -29,21 +29,21 @@ app.use('*', (req, res, next) => {
 
 app.use((err: any, req: any, res: any, next: any) => {
   res.status(err.status || 404);
-  res.send(err.status + ". API does not exist.")
+  res.send(err.status + ". API does not exist.");
 });
 
 app.set("port", process.env.PORT || 3001);
 
-const server = app.listen(app.get('port'), () => {
+const server = app.listen(app.get("port"), () => {
   console.log(
     "Server is running on http://localhost:%d in %s node",
     app.get("port"),
     app.get("env")
-  )
-})
+  );
+});
 
-createConnection(db.config).then(async connection => {
+createConnection(db.config).then(async (connection) => {
   console.log("Successfully connected to database");
-}).catch(error => console.log("TypeORM connection error: ", error));
+}).catch((error) => console.log("TypeORM connection error: ", error));
 
 export default app;

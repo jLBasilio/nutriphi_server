@@ -1,12 +1,12 @@
-'use strict';
-import express from 'express';
+"use strict";
+import express from "express";
 const router = express.Router();
-import userRouter from './user.router';
+import userRouter from "./user.router";
 
-router.get('/', (req, res) => {
+router.get("/", (req, res) => {
   res.send("Specify API.");
-})
+});
 
-router.use('/user', userRouter);
+router.use("/user", userRouter);
 
 export default router;

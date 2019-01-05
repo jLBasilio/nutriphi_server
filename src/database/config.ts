@@ -1,17 +1,17 @@
 import "reflect-metadata";
-import { User } from "./entities/User"
 import { ConnectionOptions } from "typeorm";
+import { User } from "./entities/User";
 
- export const config: ConnectionOptions = {
-  type: "mysql",
-  host: "localhost",
-  port: 3306,
-  username: "root",
-  password: "root",
+export const config: ConnectionOptions = {
   database: "nutriphi",
-  synchronize: true,
-  logging: false,
   entities: [
     User
-  ]
-}
+  ],
+  host: "localhost",
+  logging: false,
+  password: "root",
+  port: 3306,
+  synchronize: true,
+  type: "mysql",
+  username: "root"
+};
