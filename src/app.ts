@@ -44,6 +44,6 @@ const server = app.listen(app.get("port"), () => {
 
 createConnection(db.config).then(async (connection) => {
   console.log("Successfully connected to database");
-}).catch((error) => console.log("TypeORM connection error: ", error));
+}).catch((error) => console.log("Error connecting to database: ", error));
 
 export default app;

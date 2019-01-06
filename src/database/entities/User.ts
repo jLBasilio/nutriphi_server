@@ -4,18 +4,39 @@ import { Column, Entity, PrimaryGeneratedColumn  } from "typeorm";
 export class User {
 
   @PrimaryGeneratedColumn()
-  public id: number;
+  id: number;
 
   @Column()
-  public firstName: string;
+  firstName: string;
 
   @Column()
-  public lastName: string;
+  lastName: string;
+
+  @Column({ unique: true })
+  userName: string;
 
   @Column()
-  public userName: string;
+  password: string;
 
   @Column()
-  public age: number;
+  sex: string;
+
+  @Column()
+  age: number;
+
+  @Column()
+  kgWeight: number;
+
+  @Column()
+  cmHeight: number;
+
+  @Column()
+  bmi: number;
+
+  @Column()
+  lifestyle: number;
+
+  @Column()
+  target: number;
 
 }

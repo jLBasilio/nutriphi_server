@@ -1,11 +1,14 @@
+"use strict";
+import bcrypt from "bcrypt";
 import express from "express";
 import { Request, Response } from "express";
 import { getManager } from "typeorm";
 import { User } from "../database/entities/User";
+import * as userUtil from "../utils/user.util";
 
 const router = express.Router();
 
-router.get("/findall", async (req, res) => {
+router.get("/find", async (req, res) => {
   try {
     const { id } = req.params;
     const result = await getManager().getRepository(User).find();
@@ -28,7 +31,7 @@ router.get("/findall", async (req, res) => {
   }
 });
 
-router.get("/findone/id/:id", async (req, res) => {
+router.get("/find/id/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const result = await getManager().getRepository(User).findOne(id);
@@ -51,7 +54,7 @@ router.get("/findone/id/:id", async (req, res) => {
   }
 });
 
-router.get("/findone/username", async (req, res) => {
+router.get("/find/username", async (req, res) => {
   try {
     const { userName } = req.body;
     const result = await getManager().getRepository(User).findOne({ userName });
@@ -76,19 +79,27 @@ router.get("/findone/username", async (req, res) => {
 
 router.post("/add", async (req, res) => {
   try {
-    const newUser = new User();
-    newUser.firstName = req.body.firstName;
-    newUser.lastName = req.body.lastName;
-    newUser.userName = req.body.userName;
-    newUser.age = req.body.age;
-
-    const result = await getManager().getRepository(User).save(newUser);
-    const data = {
-      status: 200,
-      message: "Successfully added user.",
-      items: result
-    };
-    res.status(data.status).json(data);
+    const { userName } = req.body;
+    const existing = await getManager().getRepository(User).findOne({ userName });
+    if (typeof(existing) === "undefined") {
+      [req.body.password, req.body.bmi] = await Promise.all([
+        bcrypt.hash(req.body.password, 10),
+        userUtil.getBMI(req.body)
+      ]);
+      const result = await getManager().getRepository(User).save(req.body);
+      const data = {
+        status: 200,
+        message: "Successfully added user.",
+        items: result
+      };
+      res.status(data.status).json(data);
+    } else {
+      const data = {
+        status: 409,
+        message: "User already exists"
+      };
+      res.status(data.status).json(data);
+    }
   } catch (err) {
     res.status(err.status).json(err);
   }

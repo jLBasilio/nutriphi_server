@@ -3,15 +3,15 @@ import { ConnectionOptions } from "typeorm";
 import { User } from "./entities/User";
 
 export const config: ConnectionOptions = {
-  database: "nutriphi",
-  entities: [
-    User
-  ],
-  host: "localhost",
-  logging: false,
+  type: "mysql",
+  username: "root",
   password: "root",
+  database: "nutriphi",
+  host: "localhost",
   port: 3306,
   synchronize: true,
-  type: "mysql",
-  username: "root"
+  logging: false,
+  entities: [
+    User
+  ]
 };
