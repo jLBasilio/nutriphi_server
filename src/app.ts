@@ -11,12 +11,9 @@ import { createConnection } from "typeorm";
 import * as db from "./database/config";
 import router from "./routes";
 
-const app = express.express();
-
-// const MySQLStore = new store(session);
-
+const app = express();
+// const MySQLStore = store(session);
 // const sessionStore = new MySQLStore(db.config);
-
 
 // app.use(session({
 //   secret: "laderlappen",

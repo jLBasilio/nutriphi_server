@@ -1,12 +1,12 @@
 "use strict";
-import bcrypt from "bcrypt";
-import express from "express";
+import * as bcrypt from "bcrypt";
+import { Router } from "express";
 import { Request, Response } from "express";
 import { getManager } from "typeorm";
 import { User } from "../database/entities/User";
 import * as userUtil from "../utils/user.util";
 
-const router = express.Router();
+const router = Router();
 
 router.get("/find", async (req, res) => {
   try {
