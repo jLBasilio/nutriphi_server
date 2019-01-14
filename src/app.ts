@@ -1,21 +1,34 @@
 "use strict";
-import bodyParser from "body-parser";
-import cookieParser from "cookie-parser";
-import cors from "cors";
-import express from "express";
-import logger from "morgan";
-import path from "path";
+import * as bodyParser from "body-parser";
+import * as cors from "cors";
+import * as express from "express";
+import * as store from "express-mysql-session";
+import * as session from "express-session";
+import * as logger from "morgan";
+import * as path from "path";
 import "reflect-metadata";
 import { createConnection } from "typeorm";
 import * as db from "./database/config";
 import router from "./routes";
 
-const app = express();
+const app = express.express();
+
+// const MySQLStore = new store(session);
+
+// const sessionStore = new MySQLStore(db.config);
+
+
+// app.use(session({
+//   secret: "laderlappen",
+//   store: sessionStore,
+//   resave: false,
+//   saveUninitialized: false
+// }));
+
 app.use(logger("dev"));
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
-app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/api", router);
