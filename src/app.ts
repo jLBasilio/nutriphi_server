@@ -15,12 +15,12 @@ const app = express();
 // const MySQLStore = store(session);
 // const sessionStore = new MySQLStore(db.config);
 
-// app.use(session({
-//   secret: "laderlappen",
-//   store: sessionStore,
-//   resave: false,
-//   saveUninitialized: false
-// }));
+app.use(session({
+  secret: "laderlappen",
+  // store: sessionStore,
+  resave: false,
+  saveUninitialized: false
+}));
 
 app.use(logger("dev"));
 app.use(cors());
