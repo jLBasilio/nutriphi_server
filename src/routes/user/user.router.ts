@@ -117,7 +117,6 @@ router.post("/login", middleware.isLoggedIn, async (req, res) => {
       };
       return res.status(data.status).json(data);
     }
-
     bcrypt.compare(password, user.password, (err, result) => {
       if (result) {
         const data = {

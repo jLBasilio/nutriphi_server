@@ -1,10 +1,11 @@
 import "reflect-metadata";
 import { ConnectionOptions } from "typeorm";
+import { Session } from "./entities/Session";
 import { User } from "./entities/User";
 
 export const config: ConnectionOptions = {
   type: "mysql",
-  username: "root",
+  username: "nutriphi",
   password: "root",
   database: "nutriphi",
   host: "localhost",
@@ -12,6 +13,7 @@ export const config: ConnectionOptions = {
   synchronize: true,
   logging: false,
   entities: [
-    User
+    User,
+    Session
   ]
 };
