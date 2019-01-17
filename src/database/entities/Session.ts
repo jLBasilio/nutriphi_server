@@ -3,6 +3,7 @@ import { SessionEntity } from "typeorm-store";
 
 @Entity()
 export class Session extends BaseEntity implements SessionEntity {
+
   @PrimaryColumn()
   id: string;
 
@@ -11,4 +12,5 @@ export class Session extends BaseEntity implements SessionEntity {
 
   @Column("text")
   data: string;
+  
 }

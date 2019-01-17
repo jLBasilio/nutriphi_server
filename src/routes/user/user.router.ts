@@ -5,13 +5,12 @@ import { Request, Response } from "express";
 import { getManager } from "typeorm";
 import { User } from "../../database/entities/User";
 import * as userUtil from "../../utils/user.util";
-import * as middleware from "./user.middleware";
+import * as mw from "./user.middleware";
 
 const router = Router();
 
 router.get("/find", async (req, res) => {
   try {
-    const { id } = req.params;
     const result = await getManager().getRepository(User).find();
     if (typeof(result) !== "undefined") {
       const data = {
@@ -106,7 +105,7 @@ router.post("/add", async (req, res) => {
   }
 });
 
-router.post("/login", middleware.isLoggedIn, async (req, res) => {
+router.post("/login", mw.isLoggedIn, async (req, res) => {
   try {
     const { userName, password } = req.body;
     const user = await getManager().getRepository(User).findOne({ userName });

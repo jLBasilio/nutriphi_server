@@ -25,6 +25,9 @@ export class User {
   age: number;
 
   @Column()
+  birthday: Date;
+
+  @Column()
   kgWeight: number;
 
   @Column()

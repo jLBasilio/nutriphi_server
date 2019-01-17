@@ -1,5 +1,7 @@
 import "reflect-metadata";
 import { ConnectionOptions } from "typeorm";
+import { Consumed } from "./entities/Consumed";
+import { Food } from "./entities/Food";
 import { Session } from "./entities/Session";
 import { User } from "./entities/User";
 
