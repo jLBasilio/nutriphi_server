@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn  } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Consumed } from "./Consumed";
 
 @Entity()
 export class User {
@@ -41,5 +42,8 @@ export class User {
 
   @Column()
   target: number;
+
+  @OneToMany(() => Consumed, (consumed) => consumed.user)
+  consumed: Consumed[];
 
 }

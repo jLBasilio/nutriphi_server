@@ -16,6 +16,7 @@ export const config: ConnectionOptions = {
   logging: false,
   entities: [
     User,
-    Session
+    Session,
+    Consumed
   ]
 };

@@ -12,17 +12,17 @@ const router = Router();
 router.get("/find", async (req, res) => {
   try {
     const result = await getManager().getRepository(User).find();
-    if (typeof(result) !== "undefined") {
+    if (!result) {
       const data = {
-        status: 200,
-        message: "Users found",
-        items: result
+        status: 404,
+        message: "No users"
       };
       res.status(data.status).json(data);
     } else {
       const data = {
-        status: 404,
-        message: "No users"
+        status: 200,
+        message: "Users found",
+        items: result
       };
       res.status(data.status).json(data);
     }
@@ -35,17 +35,17 @@ router.get("/find/id/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const result = await getManager().getRepository(User).findOne(id);
-    if (typeof(result) !== "undefined") {
+    if (!result) {
       const data = {
-        status: 200,
-        message: "User found",
-        items: result
+        status: 404,
+        message: "User not found"
       };
       res.status(data.status).json(data);
     } else {
       const data = {
-        status: 404,
-        message: "User not found"
+        status: 200,
+        message: "User found",
+        items: result
       };
       res.status(data.status).json(data);
     }
@@ -58,17 +58,17 @@ router.get("/find/username", async (req, res) => {
   try {
     const { userName } = req.body;
     const result = await getManager().getRepository(User).findOne({ userName });
-    if (typeof(result) !== "undefined") {
+    if (!result) {
       const data = {
-        status: 200,
-        message: "User found",
-        items: result
+        status: 404,
+        message: "User not found"
       };
       res.status(data.status).json(data);
     } else {
       const data = {
-        status: 404,
-        message: "User not found"
+        status: 200,
+        message: "User found",
+        items: result
       };
       res.status(data.status).json(data);
     }
@@ -81,10 +81,11 @@ router.post("/add", async (req, res) => {
   try {
     const { userName } = req.body;
     const existing = await getManager().getRepository(User).findOne({ userName });
-    if (typeof(existing) === "undefined") {
-      [req.body.password, req.body.bmi] = await Promise.all([
+    if (!existing) {
+      [req.body.password, req.body.bmi, req.body.age] = await Promise.all([
         bcrypt.hash(req.body.password, 10),
-        userUtil.getBMI(req.body)
+        userUtil.getBMI(req.body),
+        userUtil.getAge(req.body.birthday)
       ]);
       const result = await getManager().getRepository(User).save(req.body);
       const data = {
@@ -109,7 +110,7 @@ router.post("/login", mw.isLoggedIn, async (req, res) => {
   try {
     const { userName, password } = req.body;
     const user = await getManager().getRepository(User).findOne({ userName });
-    if (typeof(user) === "undefined") {
+    if (!user) {
       const data = {
         status: 401,
         message: "Invalid credentials",
