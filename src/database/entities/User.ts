@@ -29,19 +29,40 @@ export class User {
   birthday: Date;
 
   @Column()
-  kgWeight: number;
+  weightKg: number;
 
   @Column()
-  cmHeight: number;
+  weightLbs: number;
+
+  @Column()
+  goalKg: number;
+
+  @Column()
+  goalLbs: number;
+
+  @Column()
+  heightCm: number;
+
+  @Column()
+  heightFt: number;
+
+  @Column()
+  heightInch: number;
 
   @Column()
   bmi: number;
+
+  @Column()
+  dbw: number;
 
   @Column()
   lifestyle: number;
 
   @Column()
   target: number;
+
+  @Column()
+  endDate: Date;
 
   @OneToMany(() => Consumed, (consumed) => consumed.user)
   consumed: Consumed[];

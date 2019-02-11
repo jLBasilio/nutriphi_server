@@ -157,7 +157,7 @@ router.post("/session", async (req, res) => {
     const data = {
       status: 200,
       message: "Successfully fetched current session.",
-      data: req.session.user || null
+      user: req.session.user || null
     };
     res.status(data.status).json(data);
   } catch (err) {
