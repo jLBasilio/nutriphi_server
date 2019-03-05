@@ -53,16 +53,25 @@ export class User {
   bmi: number;
 
   @Column()
-  dbw: number;
+  dbwKg: number;
 
   @Column()
-  lifestyle: number;
+  lifestyleMultiplier: number;
 
   @Column()
   target: number;
 
   @Column()
   endDate: Date;
+
+  @Column()
+  choPerDay: number;
+
+  @Column()
+  proPerDay: number;
+
+  @Column()
+  fatPerDay: number;
 
   @OneToMany(() => Consumed, (consumed) => consumed.user)
   consumed: Consumed[];
