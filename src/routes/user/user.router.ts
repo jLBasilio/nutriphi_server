@@ -77,41 +77,6 @@ router.get("/find/username/:userName", async (req, res) => {
   }
 });
 
-router.post("/dbw", async (req, res) => {
-  try {
-    const { sex, heightCm } = req.body;
-    const dbwKg = await userUtil.getDBW(sex, heightCm);
-    const dbwLbs = await userUtil.convertKgToLBS(dbwKg);
-    console.log(sex, heightCm);
-    const data = {
-      status: 200,
-      message: "Returned DBW",
-      data: {
-        dbwKg,
-        dbwLbs
-      }
-    };
-    res.status(data.status).json(data);
-  } catch (err) {
-    res.status(err.status).json(err);
-  }
-});
-
-router.post("/nutridist", async (req, res) => {
-  try {
-    const { dbwKg, lifestyleMultiplier } = req.body;
-    const nutriDists = await userUtil.getNutriDist(req.body.dbwKg, req.body.lifestyleMultiplier);
-    const data = {
-      status: 200,
-      message: "Returned nutridists",
-      data: nutriDists
-    };
-    res.status(data.status).json(data);
-  } catch (err) {
-    res.status(err.status).json(err);
-  }
-});
-
 router.post("/add", async (req, res) => {
   try {
     const { userName } = req.body;
@@ -126,8 +91,6 @@ router.post("/add", async (req, res) => {
         userUtil.getBMI(req.body),
         userUtil.getAge(req.body.birthday)
       ]);
-      const nutriDists = await userUtil.getNutriDist(req.body.dbwKg, req.body.lifestyleMultiplier);
-      Object.assign(req.body, nutriDists);
       const result = await getManager().getRepository(User).save(req.body);
       const data = {
         status: 200,
