@@ -6,22 +6,42 @@ export class Food {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({ nullable: true })
+  filipinoName: string;
+
+  @Column({ nullable: true })
+  englishName: string;
+
+  // Main view
   @Column()
-  gramPerExchange: number;
+  primaryClassification: string;
+
+  // Secondary view
+  @Column({ nullable: true })
+  secondaryClassification: string;
 
   @Column()
-  cho: number;
+  servingMeasurement: string;
 
-  @Column()
-  pro: number;
+  @Column("decimal", { precision: 7, scale: 2 })
+  choPerExchange: number;
 
-  @Column()
-  fat: number;
+  @Column("decimal", { precision: 7, scale: 2 })
+  proPerExchange: number;
 
-  @Column()
-  name: string;
+  @Column("decimal", { precision: 7, scale: 2 })
+  fatPerExchange: number;
 
-  @Column()
-  serving: string;
+  @Column("decimal", { precision: 7, scale: 2 })
+  gramsEPPerExchange: number;
+
+  @Column("decimal", { precision: 7, scale: 2 })
+  mlEPPerExchange: number;
+
+  @Column("decimal", { precision: 7, scale: 2 })
+  exchangePerServing: number;
+
+  @Column({ nullable: true })
+  directKcalPerServing: number;
 
 }

@@ -2,7 +2,6 @@
 import * as bodyParser from "body-parser";
 import * as cors from "cors";
 import * as express from "express";
-import * as store from "express-mysql-session";
 import * as session from "express-session";
 import * as logger from "morgan";
 import * as path from "path";

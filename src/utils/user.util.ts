@@ -9,4 +9,3 @@ export const getAge = async (birthday: string): Promise<number> => {
   const age = new Date(Date.now() - bday.getTime());
   return Math.abs(age.getUTCFullYear() - 1970);
 };
-
