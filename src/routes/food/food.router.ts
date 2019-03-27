@@ -1,14 +1,29 @@
 "use strict";
 import { Router } from "express";
 import { Request, Response } from "express";
-import { getManager } from "typeorm";
+import { getManager, Like } from "typeorm";
 import { Food } from "../../database/entities/Food";
 
 const router = Router();
 
 router.get("/find", async (req, res) => {
   try {
-    const result = await getManager().getRepository(Food).find();
+
+    let result;
+    const { skip, take, foodClass } = req.query;
+    if (!foodClass) {
+      result = await getManager().getRepository(Food).find();
+    } else {
+      result = await getManager().getRepository(Food).find({
+        where: [
+          { primaryClassification: Like(`%${foodClass}%`) },
+          { secondaryClassification: Like(`%${foodClass}%`) }
+        ],
+        skip,
+        take
+      });
+    }
+
     if (!result) {
       const data = {
         status: 404,
@@ -19,7 +34,7 @@ router.get("/find", async (req, res) => {
       const data = {
         status: 200,
         message: "Foods found",
-        items: result
+        data: result
       };
       res.status(data.status).json(data);
     }
@@ -43,7 +58,7 @@ router.post("/add", async (req, res) => {
       const data = {
         status: 200,
         message: "Food added",
-        items: result
+        data: result
       };
       res.status(data.status).json(data);
     }
