@@ -6,22 +6,49 @@ import { Food } from "../../database/entities/Food";
 
 const router = Router();
 
-router.get("/find", async (req, res) => {
+router.get("/find/:foodClass", async (req, res) => {
   try {
     let result;
-    const { skip, take, foodClass } = req.query;
-    if (!foodClass) {
-      result = await getRepository(Food).find({ skip, take });
-    } else {
-      result = await getRepository(Food).find({
-        where: [
-          { primaryClassification: Like(`%${foodClass}%`) },
-          { secondaryClassification: Like(`%${foodClass}%`) }
-        ],
-        skip,
-        take
-      });
+    const { skip, take } = req.query;
+    const { foodClass } = req.params;
+
+    // Get all with pagination, but count the overall
+    if (foodClass === "all") {
+      result = await getRepository(Food)
+        .createQueryBuilder("food")
+        .addSelect((subQuery) => (
+          subQuery
+            .select("COUNT(*)", "count")
+            .from(Food, "")
+         ), "total")
+        .orderBy("(IF (food.filipinoName IS NULL, 1, 0)), food.filipinoName", "ASC")
+        .addOrderBy("(IF (food.englishName IS NULL, 1, 0)), food.englishName", "ASC")
+        .skip(skip)
+        .take(take)
+        .getRawMany();
+    } else { // Get specific class with pagination, but count the overall
+      result = await getRepository(Food)
+        .createQueryBuilder("food")
+        .addSelect((subQuery) => (
+          subQuery
+            .select("COUNT(*)", "count")
+            .from(Food, "food")
+            .where(`primaryClassification LIKE '%${foodClass}%'
+              OR
+              secondaryClassification LIKE '%${foodClass}%'
+            `)
+         ), "total")
+        .where(`primaryClassification LIKE '%${foodClass}%'
+          OR
+          secondaryClassification LIKE '%${foodClass}%'
+        `)
+        .orderBy("(IF (food.filipinoName IS NULL, 1, 0)), food.filipinoName", "ASC")
+        .addOrderBy("(IF (food.englishName IS NULL, 1, 0)), food.englishName", "ASC")
+        .skip(skip)
+        .take(take)
+        .getRawMany();
     }
+
     if (!result) {
       const data = {
         status: 404,
@@ -41,35 +68,69 @@ router.get("/find", async (req, res) => {
   }
 });
 
-router.get("/find/count", async (req, res) => {
+router.get("/search/:foodClass", async (req, res) => {
   try {
-    const { foodClass } = req.query;
-
     let result;
-    if (!foodClass) {
+    const { skip, take, q } = req.query;
+    const { foodClass } = req.params;
+    if (foodClass === "all") {
       result = await getRepository(Food)
         .createQueryBuilder("food")
-        .select("COUNT (*)", "count")
-        .getRawOne();
+        .addSelect((subQuery) => (
+          subQuery
+            .select("COUNT(*)", "count")
+            .from(Food, "food")
+            .where(`primaryClassification LIKE '%${q}%'
+              OR
+              secondaryClassification LIKE '%${q}%'
+            `)
+         ), "total")
+        .where(`filipinoName LIKE '%${q}%'
+          OR
+          englishName LIKE '%${q}%'
+        `)
+        .orderBy("(IF (food.filipinoName IS NULL, 1, 0)), food.filipinoName", "ASC")
+        .addOrderBy("(IF (food.englishName IS NULL, 1, 0)), food.englishName", "ASC")
+        .skip(skip)
+        .take(take)
+        .getRawMany();
     } else {
       result = await getRepository(Food)
         .createQueryBuilder("food")
-        .select("COUNT (*)", "count")
-        .where(`primaryClassification LIKE '%${foodClass}%'
+        .addSelect((subQuery) => (
+          subQuery
+            .select("COUNT(*)", "count")
+            .from(Food, "food")
+            .where(`(primaryClassification LIKE '%${foodClass}%'
+              OR
+              secondaryClassification LIKE '%${foodClass}%')
+              AND
+              (filipinoName LIKE '%${q}%'
+              OR
+              englishName LIKE '%${q}%'
+              )
+            `)
+         ), "total")
+        .where(`(primaryClassification LIKE '%${foodClass}%'
           OR
-          secondaryClassification LIKE '%${foodClass}%'
+          secondaryClassification LIKE '%${foodClass}%')
+          AND
+          (filipinoName LIKE '%${q}%'
+          OR
+          englishName LIKE '%${q}%'
+          )
         `)
-        .getRawOne();
-    }
-
-    if (result.count) {
-      result.count = parseInt(result.count, 10);
+        .orderBy("(IF (food.filipinoName IS NULL, 1, 0)), food.filipinoName", "ASC")
+        .addOrderBy("(IF (food.englishName IS NULL, 1, 0)), food.englishName", "ASC")
+        .skip(skip)
+        .take(take)
+        .getRawMany();
     }
 
     if (!result) {
       const data = {
         status: 404,
-        message: "Zero count"
+        message: "No foods"
       };
       res.status(data.status).json(data);
     } else {
