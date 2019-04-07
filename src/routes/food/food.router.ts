@@ -80,9 +80,9 @@ router.get("/search/:foodClass", async (req, res) => {
           subQuery
             .select("COUNT(*)", "count")
             .from(Food, "food")
-            .where(`primaryClassification LIKE '%${q}%'
+            .where(`filipinoName LIKE '%${q}%'
               OR
-              secondaryClassification LIKE '%${q}%'
+              englishName LIKE '%${q}%'
             `)
          ), "total")
         .where(`filipinoName LIKE '%${q}%'
