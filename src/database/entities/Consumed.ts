@@ -18,18 +18,6 @@ export class Consumed {
   foodId: number;
 
   @Column()
-  gramsmlConsumed: number;
-
-  @Column()
-  measureConsumed: number;
-
-  @Column()
-  totalKcalConsumed: number;
-
-  @Column()
-  period: string;
-
-  @Column()
   dateConsumed: Date;
 
   @ManyToOne(() => User, (user: User) => user.consumed, {

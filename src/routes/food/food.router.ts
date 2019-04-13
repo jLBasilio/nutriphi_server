@@ -1,7 +1,7 @@
 "use strict";
 import { Router } from "express";
 import { Request, Response } from "express";
-import { getRepository } from "typeorm";
+import { getRepository, Like } from "typeorm";
 import { Food } from "../../database/entities/Food";
 
 const router = Router();
@@ -43,7 +43,7 @@ router.get("/find/:foodClass", async (req, res) => {
           secondaryClassification LIKE '%${foodClass}%'
         `)
         .orderBy("(IF (food.filipinoName IS NULL, 1, 0)), food.filipinoName", "ASC")
-        .addOrderBy("(IF (food.englishName IS NULL, 1, 0)), food.englishName", "ASC")  
+        .addOrderBy("(IF (food.englishName IS NULL, 1, 0)), food.englishName", "ASC")
         .skip(skip)
         .take(take)
         .getRawMany();
