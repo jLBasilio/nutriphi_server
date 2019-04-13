@@ -1,5 +1,4 @@
-export const getKcal = (foodInfo: Object) => {
-  
-  console.log('kcal!')
+export const getKcal = (foodInfo: object) => {
+  console.log("kcal!");
 
 };
