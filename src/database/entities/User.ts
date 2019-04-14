@@ -26,7 +26,7 @@ export class User {
   age: number;
 
   @Column()
-  birthday: Date;
+  birthday: string;
 
   @Column()
   weightKg: number;
@@ -62,7 +62,7 @@ export class User {
   target: number;
 
   @Column()
-  endDate: Date;
+  endDate: string;
 
   @Column()
   choPerDay: number;

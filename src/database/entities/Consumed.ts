@@ -18,7 +18,19 @@ export class Consumed {
   foodId: number;
 
   @Column()
-  dateConsumed: Date;
+  gramsmlConsumed: number;
+
+  @Column()
+  measureConsumed: number;
+
+  @Column()
+  totalKcalConsumed: number;
+
+  @Column()
+  period: string;
+
+  @Column()
+  dateConsumed: string;
 
   @ManyToOne(() => User, (user: User) => user.consumed, {
     onDelete: "CASCADE"
