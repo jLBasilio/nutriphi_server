@@ -44,4 +44,7 @@ export class Food {
   @Column({ nullable: true })
   directKcalPerMeasure: number;
 
+  @Column({ nullable: true })
+  unitMeasurement: string;
+
 }
