@@ -148,7 +148,6 @@ router.get("/search/:foodClass", async (req, res) => {
 
 router.post("/add", async (req, res) => {
   try {
-
     const result = await getRepository(Food).save(req.body);
     if (!result) {
       const data = {

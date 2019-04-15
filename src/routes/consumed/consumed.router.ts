@@ -10,13 +10,28 @@ const router = Router();
 
 router.post("/add", async (req, res) => {
   try {
-    const { foodId } = req.body;
+    const {
+      user,
+      period,
+      foodId,
+      gramsmlConsumed,
+      dateConsumed
+    } = req.body;
     const food = await getRepository(Food).findOne(foodId);
-    const totalKcal = consumedUtil.getKcal(food);
+    const totalKcal = consumedUtil.getKcal(food, gramsmlConsumed);
+    const consumed = {
+      user,
+      period,
+      foodId,
+      dateConsumed,
+      ...totalKcal
+    };
+
+    const result = await getRepository(Consumed).save(consumed);
     const data = {
       status: 200,
-      message: "Successfully added consumed food",
-      items: "sad"
+      message: "Successfully added user",
+      data: result
     };
     res.status(data.status).json(data);
   } catch (err) {

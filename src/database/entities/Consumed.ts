@@ -17,14 +17,23 @@ export class Consumed {
   @Column()
   foodId: number;
 
-  @Column()
-  gramsmlConsumed: number;
+  @Column({ nullable: true })
+  gramsConsumed: number;
 
-  @Column()
-  measureConsumed: number;
+  @Column({ nullable: true })
+  mlConsumed: number;
 
   @Column()
   totalKcalConsumed: number;
+
+  @Column()
+  choGrams: number;
+
+  @Column()
+  proGrams: number;
+
+  @Column()
+  fatGrams: number;
 
   @Column()
   period: string;

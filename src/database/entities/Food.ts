@@ -32,16 +32,16 @@ export class Food {
   @Column("decimal", { precision: 7, scale: 2 })
   fatPerExchange: number;
 
-  @Column("decimal", { precision: 7, scale: 2 })
+  @Column("decimal", { precision: 7, scale: 2, nullable: true })
   gramsEPPerExchange: number;
 
-  @Column("decimal", { precision: 7, scale: 2 })
+  @Column("decimal", { precision: 7, scale: 2, nullable: true  })
   mlEPPerExchange: number;
 
   @Column("decimal", { precision: 7, scale: 2 })
-  exchangePerServing: number;
+  exchangePerMeasure: number;
 
   @Column({ nullable: true })
-  directKcalPerServing: number;
+  directKcalPerMeasure: number;
 
 }
