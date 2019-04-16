@@ -11,7 +11,7 @@ const router = Router();
 router.get("/find/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
-    const { skip, take, q } = req.query;
+    const { skip, take, date } = req.query;
     const toReturn: any[] = [];
     let foodPromises: any[] = [];
 
@@ -23,7 +23,7 @@ router.get("/find/:userId", async (req, res) => {
           .from(Consumed, "")
           .where(`userId = ${userId}`)
        ), "total")
-      .where(`userId = ${userId}`)
+      .where(`userId = ${userId} AND dateConsumed LIKE '%${date}%'`)
       .orderBy("dateConsumed", "DESC")
       .skip(skip)
       .take(take)
