@@ -11,23 +11,40 @@ const router = Router();
 router.get("/find/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
-    const { skip, take, date } = req.query;
+    const { date, period } = req.query;
     const toReturn: any[] = [];
     let foodPromises: any[] = [];
-
-    const result = await getRepository(Consumed)
-      .createQueryBuilder("consumed")
-      .addSelect((subQuery) => (
-        subQuery
-          .select("COUNT(*)", "count")
-          .from(Consumed, "")
-          .where(`userId = ${userId}`)
-       ), "total")
-      .where(`userId = ${userId} AND dateConsumed LIKE '%${date}%'`)
-      .orderBy("dateConsumed", "DESC")
-      .skip(skip)
-      .take(take)
-      .getRawMany();
+    let result;
+    if (period) {
+      result = await getRepository(Consumed)
+        .createQueryBuilder("consumed")
+        .addSelect((subQuery) => (
+          subQuery
+            .select("COUNT(*)", "count")
+            .from(Consumed, "")
+            .where(`userId = ${userId}`)
+         ), "total")
+        .where(`userId = ${userId}
+          AND dateConsumed LIKE '%${date}%'
+          AND period = '${period}'
+        `)
+        .orderBy("dateConsumed", "DESC")
+        .getRawMany();
+    } else {
+      result = await getRepository(Consumed)
+        .createQueryBuilder("consumed")
+        .addSelect((subQuery) => (
+          subQuery
+            .select("COUNT(*)", "count")
+            .from(Consumed, "")
+            .where(`userId = ${userId}`)
+         ), "total")
+        .where(`userId = ${userId}
+          AND dateConsumed LIKE '%${date}%'
+        `)
+        .orderBy("dateConsumed", "DESC")
+        .getRawMany();
+    }
 
     result.forEach((consumed, index) => {
       toReturn.push(JSON.parse(JSON.stringify(consumed)));
@@ -35,7 +52,6 @@ router.get("/find/:userId", async (req, res) => {
     });
     foodPromises = await Promise.all(foodPromises);
     toReturn.forEach((consumed, index) => consumed.foodInfo = foodPromises[index]);
-
     const data = {
       status: 200,
       message: "Successfully fetched consumed",
@@ -71,6 +87,42 @@ router.post("/add", async (req, res) => {
       status: 200,
       message: "Successfully added consumed",
       data: result
+    };
+    res.status(data.status).json(data);
+  } catch (err) {
+    res.status(err.status).json(err);
+  }
+});
+
+router.put("/edit/:consumedId", async (req, res) => {
+  try {
+    const { consumedId } = req.params;
+    const { userId, id, ...logInfo } = JSON.parse(JSON.stringify(req.body).replace(/consumed_/g, ""));
+    const food = await getRepository(Food).findOne(logInfo.foodId);
+    const totalKcal = consumedUtil.getKcal(food, logInfo.gramsmlConsumed);
+    const result = await getRepository(Consumed)
+      .createQueryBuilder("consumed")
+      .update(Consumed)
+      .set({ ...logInfo, ...totalKcal })
+      .where(`userId = ${userId} AND id = ${id}`)
+      .execute();
+    const data = {
+      status: 200,
+      message: "Successfully updated consumed",
+    };
+    res.status(data.status).json(data);
+  } catch (err) {
+    res.status(err.status).json(err);
+  }
+});
+
+router.delete("/delete/:consumedId", async (req, res) => {
+  try {
+    const { consumedId } = req.params;
+    const result = await getRepository(Consumed).delete(consumedId);
+    const data = {
+      status: 200,
+      message: "Successfully deleted consumed",
     };
     res.status(data.status).json(data);
   } catch (err) {

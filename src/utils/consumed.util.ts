@@ -22,7 +22,7 @@ export const getKcal = (foodInfo: Food, gramsmlConsumed: number): object => {
   } = foodInfo;
   let toReturn = {};
   let totalKcalConsumed = 0;
-  const consumedDivider = gramsEPPerExchange ? gramsEPPerExchange : mlEPPerExchange;
+  const consumedDivider = gramsEPPerExchange || mlEPPerExchange;
   const measureQuantity = gramsmlConsumed / consumedDivider / exchangePerMeasure;
   const gramsRaw = gramsmlConsumed / consumedDivider;
   const gramsRem = gramsmlConsumed % consumedDivider;

@@ -59,7 +59,7 @@ export class User {
   lifestyleMultiplier: number;
 
   @Column()
-  target: number;
+  target: string;
 
   @Column()
   endDate: string;
