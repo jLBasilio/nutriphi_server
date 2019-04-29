@@ -1,4 +1,11 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn  } from "typeorm";
+import {
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn
+} from "typeorm";
+import { Consumed } from "./Consumed";
+import { Favorite } from "./Favorite";
 
 @Entity()
 export class Food {
@@ -47,4 +54,9 @@ export class Food {
   @Column({ nullable: true })
   unitMeasurement: string;
 
+  @OneToMany(() => Favorite, (favorite: Favorite) => favorite.food)
+  favorite: Favorite[];
+
+  @OneToMany(() => Consumed, (consumed: Consumed) => consumed.food)
+  consumed: Consumed[];
 }

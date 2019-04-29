@@ -1,7 +1,7 @@
 "use strict";
 import { Router } from "express";
 import { Request, Response } from "express";
-import { getRepository, Like } from "typeorm";
+import { getRepository } from "typeorm";
 import { Food } from "../../database/entities/Food";
 
 const router = Router();
@@ -49,7 +49,7 @@ router.get("/find/:foodClass", async (req, res) => {
         .getRawMany();
     }
 
-    if (!result) {
+    if (!result.length) {
       const data = {
         status: 404,
         message: "No foods"
@@ -127,7 +127,7 @@ router.get("/search/:foodClass", async (req, res) => {
         .getRawMany();
     }
 
-    if (!result) {
+    if (!result.length) {
       const data = {
         status: 404,
         message: "No foods"

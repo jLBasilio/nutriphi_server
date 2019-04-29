@@ -12,12 +12,11 @@ router.get("/find/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
     const { date, period } = req.query;
-    const toReturn: any[] = [];
-    let foodPromises: any[] = [];
     let result;
     if (period) {
       result = await getRepository(Consumed)
         .createQueryBuilder("consumed")
+        .leftJoinAndSelect("consumed.food", "food")
         .addSelect((subQuery) => (
           subQuery
             .select("COUNT(*)", "count")
@@ -33,6 +32,7 @@ router.get("/find/:userId", async (req, res) => {
     } else {
       result = await getRepository(Consumed)
         .createQueryBuilder("consumed")
+        .leftJoinAndSelect("consumed.food", "food")
         .addSelect((subQuery) => (
           subQuery
             .select("COUNT(*)", "count")
@@ -46,16 +46,10 @@ router.get("/find/:userId", async (req, res) => {
         .getRawMany();
     }
 
-    result.forEach((consumed, index) => {
-      toReturn.push(JSON.parse(JSON.stringify(consumed)));
-      foodPromises.push(getRepository(Food).findOne({ id: consumed.consumed_foodId }));
-    });
-    foodPromises = await Promise.all(foodPromises);
-    toReturn.forEach((consumed, index) => consumed.foodInfo = foodPromises[index]);
     const data = {
       status: 200,
       message: "Successfully fetched consumed",
-      data: toReturn
+      data: result
     };
     res.status(data.status).json(data);
   } catch (err) {
@@ -68,20 +62,19 @@ router.post("/add", async (req, res) => {
     const {
       user,
       period,
-      foodId,
+      foodId: food,
       gramsmlConsumed,
       dateConsumed
     } = req.body;
-    const food = await getRepository(Food).findOne(foodId);
-    const totalKcal = consumedUtil.getKcal(food, gramsmlConsumed);
+    const foodSearched = await getRepository(Food).findOne(food);
+    const totalKcal = consumedUtil.getKcal(foodSearched, gramsmlConsumed);
     const consumed = {
       user,
       period,
-      foodId,
+      food,
       dateConsumed,
       ...totalKcal
     };
-
     const result = await getRepository(Consumed).save(consumed);
     const data = {
       status: 200,

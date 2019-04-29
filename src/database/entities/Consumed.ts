@@ -3,9 +3,9 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToOne,
   PrimaryGeneratedColumn
 } from "typeorm";
+import { Food } from "./Food";
 import { User } from "./User";
 
 @Entity()
@@ -13,9 +13,6 @@ export class Consumed {
 
   @PrimaryGeneratedColumn()
   id: number;
-
-  @Column()
-  foodId: number;
 
   @Column({ nullable: true })
   gramsConsumed: number;
@@ -46,5 +43,11 @@ export class Consumed {
   })
   @JoinColumn()
   user: User;
+
+  @ManyToOne(() => Food, (food: Food) => food.consumed, {
+    onDelete: "CASCADE"
+  })
+  @JoinColumn()
+  food: Food;
 
 }

@@ -1,6 +1,7 @@
 import "reflect-metadata";
 import { ConnectionOptions } from "typeorm";
 import { Consumed } from "./entities/Consumed";
+import { Favorite } from "./entities/Favorite";
 import { Food } from "./entities/Food";
 import { Nutrient } from "./entities/Nutrient";
 import { Session } from "./entities/Session";
@@ -20,6 +21,7 @@ export const config: ConnectionOptions = {
     Session,
     Consumed,
     Food,
-    Nutrient
+    Nutrient,
+    Favorite
   ]
 };
