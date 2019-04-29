@@ -2,7 +2,7 @@
 import * as bcrypt from "bcrypt";
 import { Router } from "express";
 import { Request, Response } from "express";
-import { getManager } from "typeorm";
+import { getRepository } from "typeorm";
 import { User } from "../../database/entities/User";
 import * as userUtil from "../../utils/user.util";
 import * as mw from "./user.middleware";
@@ -11,7 +11,7 @@ const router = Router();
 
 router.get("/find", async (req, res) => {
   try {
-    const result = await getManager().getRepository(User).find();
+    const result = await getRepository(User).find();
     if (!result) {
       const data = {
         status: 404,
@@ -34,7 +34,7 @@ router.get("/find", async (req, res) => {
 router.get("/find/id/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const result = await getManager().getRepository(User).findOne(id);
+    const result = await getRepository(User).findOne(id);
     if (!result) {
       const data = {
         status: 404,
@@ -57,7 +57,7 @@ router.get("/find/id/:id", async (req, res) => {
 router.get("/find/username/:userName", async (req, res) => {
   try {
     const { userName } = req.params;
-    const result = await getManager().getRepository(User).findOne({ userName });
+    const result = await getRepository(User).findOne({ userName });
     if (!result) {
       const data = {
         status: 404,
@@ -80,18 +80,18 @@ router.get("/find/username/:userName", async (req, res) => {
 router.post("/add", async (req, res) => {
   try {
     const { userName } = req.body;
-    const existing = await getManager().getRepository(User).findOne({ userName });
+    const existing = await getRepository(User).findOne({ userName });
     if (!existing) {
-      [
-        req.body.password,
+      [req.body.password,
         req.body.bmi,
         req.body.age,
       ] = await Promise.all([
         bcrypt.hash(req.body.password, 10),
-        userUtil.getBMI(req.body),
+        userUtil.getBMI(req.body.weightKg, req.body.heightCm),
         userUtil.getAge(req.body.birthday)
       ]);
-      const result = await getManager().getRepository(User).save(req.body);
+      req.body.bmiClass = await userUtil.getBMIClass(req.body.bmi);
+      const result = await getRepository(User).save(req.body);
       const data = {
         status: 200,
         message: "Successfully added user",
@@ -113,7 +113,7 @@ router.post("/add", async (req, res) => {
 router.post("/login", mw.isLoggedIn, async (req, res) => {
   try {
     const { userName, password } = req.body;
-    const user = await getManager().getRepository(User).findOne({ userName });
+    const user = await getRepository(User).findOne({ userName });
     if (!user) {
       const data = {
         status: 401,
@@ -162,6 +162,29 @@ router.post("/session", async (req, res) => {
       status: 200,
       message: "Successfully fetched current session.",
       data: req.session.user || null
+    };
+    res.status(data.status).json(data);
+  } catch (err) {
+    res.status(err.status).json(err);
+  }
+});
+
+router.put("/edit/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    req.body.bmi = await userUtil.getBMI(req.body.weightKg, req.body.heightCm);
+    req.body.bmiClass = await userUtil.getBMIClass(req.body.bmi);
+    const result = await getRepository(User)
+      .createQueryBuilder("user")
+      .update(User)
+      .set({ ...req.body })
+      .where(`id = ${id}`)
+      .execute();
+    const user = await getRepository(User).findOne({ id });
+    req.session.user = user;
+    const data = {
+      status: 200,
+      message: "Successfully updated consumed",
     };
     res.status(data.status).json(data);
   } catch (err) {

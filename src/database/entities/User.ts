@@ -28,50 +28,65 @@ export class User {
   @Column()
   birthday: string;
 
-  @Column()
+  @Column("decimal", { precision: 7, scale: 2 })
   weightKg: number;
 
-  @Column()
+  @Column("decimal", { precision: 7, scale: 2 })
   weightLbs: number;
 
-  @Column()
+  @Column("decimal", { precision: 7, scale: 2 })
   goalKg: number;
 
-  @Column()
+  @Column("decimal", { precision: 7, scale: 2 })
   goalLbs: number;
 
-  @Column()
+  @Column("decimal", { precision: 7, scale: 2 })
   heightCm: number;
 
-  @Column()
+  @Column("decimal", { precision: 7, scale: 2 })
   heightFt: number;
 
-  @Column()
+  @Column("decimal", { precision: 7, scale: 2 })
   heightInch: number;
 
-  @Column()
+  @Column("decimal", { precision: 7, scale: 2 })
   bmi: number;
 
   @Column()
-  dbwKg: number;
+  bmiClass: string;
 
   @Column()
+  dbwKg: string;
+
+  @Column("decimal", { precision: 7, scale: 2 })
   lifestyleMultiplier: number;
 
   @Column()
   target: string;
 
-  @Column()
+  @Column({ nullable: true })
   endDate: string;
 
-  @Column()
+  @Column("decimal", { precision: 7, scale: 2 })
   choPerDay: number;
 
-  @Column()
+  @Column("decimal", { precision: 7, scale: 2 })
   proPerDay: number;
 
-  @Column()
+  @Column("decimal", { precision: 7, scale: 2 })
   fatPerDay: number;
+
+  @Column({ nullable: true })
+  weeksToComplete: number;
+
+  @Column("decimal", { precision: 7, scale: 2, nullable: true })
+  kcalAddSubToGoal: number;
+
+  @Column("decimal", { precision: 7, scale: 2 })
+  baseTEA: number;
+
+  @Column("decimal", { precision: 7, scale: 2 })
+  goalTEA: number;
 
   @OneToMany(() => Consumed, (consumed) => consumed.user)
   consumed: Consumed[];
