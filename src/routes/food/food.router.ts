@@ -23,8 +23,8 @@ router.get("/find/:foodClass", async (req, res) => {
          ), "total")
         .orderBy("(IF (food.filipinoName IS NULL, 1, 0)), food.filipinoName", "ASC")
         .addOrderBy("(IF (food.englishName IS NULL, 1, 0)), food.englishName", "ASC")
-        .skip(skip)
-        .take(take)
+        .offset(skip)
+        .limit(take)
         .getRawMany();
     } else { // Get specific class with pagination, but count the overall
       result = await getRepository(Food)
@@ -44,8 +44,8 @@ router.get("/find/:foodClass", async (req, res) => {
         `)
         .orderBy("(IF (food.filipinoName IS NULL, 1, 0)), food.filipinoName", "ASC")
         .addOrderBy("(IF (food.englishName IS NULL, 1, 0)), food.englishName", "ASC")
-        .skip(skip)
-        .take(take)
+        .offset(skip)
+        .limit(take)
         .getRawMany();
     }
 
@@ -91,8 +91,8 @@ router.get("/search/:foodClass", async (req, res) => {
         `)
         .orderBy("(IF (food.filipinoName IS NULL, 1, 0)), food.filipinoName", "ASC")
         .addOrderBy("(IF (food.englishName IS NULL, 1, 0)), food.englishName", "ASC")
-        .skip(skip)
-        .take(take)
+        .offset(skip)
+        .limit(take)
         .getRawMany();
     } else {
       result = await getRepository(Food)
@@ -122,12 +122,12 @@ router.get("/search/:foodClass", async (req, res) => {
         `)
         .orderBy("(IF (food.filipinoName IS NULL, 1, 0)), food.filipinoName", "ASC")
         .addOrderBy("(IF (food.englishName IS NULL, 1, 0)), food.englishName", "ASC")
-        .skip(skip)
-        .take(take)
+        .offset(skip)
+        .limit(take)
         .getRawMany();
     }
 
-    if (!result.length) {
+    if (!result) {
       const data = {
         status: 404,
         message: "No foods"
