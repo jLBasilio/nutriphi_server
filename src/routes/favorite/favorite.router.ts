@@ -102,8 +102,21 @@ router.get("/search/:id", async (req, res) => {
       };
       res.status(data.status).json(data);
     } else {
+
+      const count = await getRepository(Favorite)
+        .createQueryBuilder()
+        .select("COUNT(*)", "count")
+        .where(`userId = ${user}
+          AND
+          (filipinoName LIKE '%${q}%'
+            OR
+          englishName LIKE '%${q}%')
+        `)
+        .getRawOne();
+
       result = JSON.parse(JSON.stringify(result));
-      result[0].total = result.length;
+      result[0].total = count.count;
+
       const data = {
         status: 200,
         message: "Successfully fetched favorites",

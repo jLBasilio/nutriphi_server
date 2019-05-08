@@ -6,6 +6,7 @@ import {
 } from "typeorm";
 import { Consumed } from "./Consumed";
 import { Favorite } from "./Favorite";
+import { Ingredient } from "./Ingredient";
 
 @Entity()
 export class Food {
@@ -59,4 +60,7 @@ export class Food {
 
   @OneToMany(() => Consumed, (consumed: Consumed) => consumed.food)
   consumed: Consumed[];
+
+  @OneToMany(() => Ingredient, (ingredient: Ingredient) => ingredient.food)
+  ingredient: Ingredient[];
 }

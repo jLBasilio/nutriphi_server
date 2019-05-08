@@ -1,6 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Consumed } from "./Consumed";
 import { Favorite } from "./Favorite";
+import { Meal } from "./Meal";
 
 @Entity()
 export class User {
@@ -94,5 +95,8 @@ export class User {
 
   @OneToMany(() => Favorite, (favorite: Favorite) => favorite.user)
   favorite: Favorite[];
+
+  @OneToMany(() => Meal, (meal: Meal) => meal.user)
+  meal: Meal[];
 
 }

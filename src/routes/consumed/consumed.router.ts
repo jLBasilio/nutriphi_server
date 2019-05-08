@@ -12,7 +12,7 @@ router.get("/find/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
     const { date, period } = req.query;
-    let result;
+    let result = [];
     if (period) {
       result = await getRepository(Consumed)
         .createQueryBuilder("consumed")

@@ -68,6 +68,39 @@ router.get("/find/:foodClass", async (req, res) => {
   }
 });
 
+router.get("/search/raw/:foodClass", async (req, res) => {
+  try {
+    const { q } = req.query;
+    const { foodClass } = req.params;
+    const result = await getRepository(Food)
+      .createQueryBuilder("food")
+      .where(`filipinoName LIKE '%${q}%'
+        OR
+        englishName LIKE '%${q}%'
+      `)
+      .orderBy("(IF (food.filipinoName IS NULL, 1, 0)), food.filipinoName", "ASC")
+      .addOrderBy("(IF (food.englishName IS NULL, 1, 0)), food.englishName", "ASC")
+      .getRawMany();
+
+    if (!result.length) {
+      const data = {
+        status: 404,
+        message: "No foods"
+      };
+      res.status(data.status).json(data);
+    } else {
+      const data = {
+        status: 200,
+        message: "Foods found",
+        data: result
+      };
+      res.status(data.status).json(data);
+    }
+  } catch (err) {
+    res.status(err.status).json(err);
+  }
+});
+
 router.get("/search/:foodClass", async (req, res) => {
   try {
     let result;

@@ -3,6 +3,8 @@ import { ConnectionOptions } from "typeorm";
 import { Consumed } from "./entities/Consumed";
 import { Favorite } from "./entities/Favorite";
 import { Food } from "./entities/Food";
+import { Ingredient } from "./entities/Ingredient";
+import { Meal } from "./entities/Meal";
 import { Nutrient } from "./entities/Nutrient";
 import { Session } from "./entities/Session";
 import { User } from "./entities/User";
@@ -22,6 +24,8 @@ export const config: ConnectionOptions = {
     Consumed,
     Food,
     Nutrient,
-    Favorite
+    Favorite,
+    Meal,
+    Ingredient
   ]
 };

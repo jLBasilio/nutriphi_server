@@ -27,8 +27,11 @@ export const getKcal = (foodInfo: Food, gramsmlConsumed: number): object => {
   const gramsRaw = gramsmlConsumed / consumedDivider;
   const gramsRem = gramsmlConsumed % consumedDivider;
 
+  // TODO: Unnecessary if condition
   if (directKcalPerMeasure) {
-    totalKcalConsumed += parseFloat((directKcalPerMeasure * measureQuantity).toFixed(2));
+    totalKcalConsumed += parseFloat((
+      directKcalPerMeasure * measureQuantity * exchangePerMeasure
+    ).toFixed(2));
   } else {
     const consumedMultiplier = gramsRem > 0 && directKcalPerMeasure ? gramsRem : gramsRaw;
     totalKcalConsumed += consumedMultiplier * choPerExchange * unitConst.CHO_MUL;
