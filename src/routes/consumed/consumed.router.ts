@@ -87,6 +87,33 @@ router.post("/add", async (req, res) => {
   }
 });
 
+router.post("/add/meal", async (req, res) => {
+  try {
+    const {
+      logs
+    } = req.body;
+
+    const queryPromises: Array<Promise<Consumed>> = [];
+    logs.forEach(async (log: any) => {
+      const { foodId: food, gramsmlConsumed, ...logCopy } = log;
+      const foodSearched = await getRepository(Food).findOne(food);
+      const totalKcal = consumedUtil.getKcal(foodSearched, gramsmlConsumed);
+      queryPromises.push(getRepository(Consumed).save(
+        Object.assign({ ...totalKcal, food }, logCopy)
+      ));
+    });
+
+    await Promise.all(queryPromises);
+    const data = {
+      status: 200,
+      message: "Successfully added meal"
+    };
+    res.status(data.status).json(data);
+  } catch (err) {
+    res.status(err.status).json(err);
+  }
+});
+
 router.put("/edit/:consumedId", async (req, res) => {
   try {
     const { consumedId } = req.params;
