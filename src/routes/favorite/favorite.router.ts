@@ -79,6 +79,7 @@ router.get("/search/:id", async (req, res) => {
   try {
     const { id: user } = req.params;
     const { skip, take, q } = req.query;
+
     let result: any = await getRepository(Favorite)
       .createQueryBuilder("favorite")
       .leftJoinAndSelect("favorite.food", "food")
@@ -90,8 +91,8 @@ router.get("/search/:id", async (req, res) => {
       `)
       .orderBy("(IF (food.filipinoName IS NULL, 1, 0)), food.filipinoName", "ASC")
       .addOrderBy("(IF (food.englishName IS NULL, 1, 0)), food.englishName", "ASC")
-      .offset(skip)
-      .limit(take)
+      // .offset(skip)
+      // .limit(take)
       .getRawMany();
 
     if (!result.length) {
@@ -102,21 +103,8 @@ router.get("/search/:id", async (req, res) => {
       };
       res.status(data.status).json(data);
     } else {
-
-      const count = await getRepository(Favorite)
-        .createQueryBuilder()
-        .select("COUNT(*)", "count")
-        .where(`userId = ${user}
-          AND
-          (filipinoName LIKE '%${q}%'
-            OR
-          englishName LIKE '%${q}%')
-        `)
-        .getRawOne();
-
       result = JSON.parse(JSON.stringify(result));
-      result[0].total = count.count;
-
+      result[0].total = result.length;
       const data = {
         status: 200,
         message: "Successfully fetched favorites",
