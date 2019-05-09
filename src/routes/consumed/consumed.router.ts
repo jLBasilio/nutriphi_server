@@ -57,6 +57,55 @@ router.get("/find/:userId", async (req, res) => {
   }
 });
 
+router.get("/find/progress/:id", async (req, res) => {
+  try {
+
+    const { id } = req.params;
+    const result: object[] = [];
+    const dateList: string[] = [];
+    const queryPromises: Array<Promise<any>> = [];
+    let toFetch;
+
+    let date = new Date();
+    date = new Date(date.setDate(date.getDate() + 3));
+
+    for (let i = 0; i < 15; i++) {
+      date = new Date(date.setDate(date.getDate() - 1));
+      toFetch = `${date.getFullYear()}-${(date.getMonth() < 10 ? "0" : "")
+        + (date.getMonth() + 1)}-${(date.getDate() < 10 ? "0" : "")
+        + date.getDate()}`;
+
+      queryPromises.push(
+        getRepository(Consumed)
+          .createQueryBuilder()
+          .where(`userId = ${id}
+            AND dateConsumed LIKE '%${toFetch}%'
+          `)
+          .getMany()
+      );
+      dateList.push(toFetch);
+    }
+
+    const logs = await Promise.all(queryPromises);
+
+    logs.forEach((log, index) => (
+      result.push({
+        date: dateList[index],
+        totalKcal: log.reduce((kcalAcc: any, curr: any) => kcalAcc + parseFloat(curr.totalKcalConsumed), 0)
+      })
+    ));
+
+    const data = {
+      status: 200,
+      message: "Successfully fetched progress",
+      data: result
+    };
+    res.status(data.status).json(data);
+  } catch (err) {
+    res.status(err.status).json(err);
+  }
+});
+
 router.post("/add", async (req, res) => {
   try {
     const {
