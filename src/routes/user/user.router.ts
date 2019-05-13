@@ -174,6 +174,7 @@ router.put("/edit/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const user = await getRepository(User).findOne({ id });
+
     if (user.weightKg !== req.body.weightKg
       || user.weightLbs !== req.body.weightLbs) {
 

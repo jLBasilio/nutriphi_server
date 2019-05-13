@@ -9,7 +9,6 @@ import {
 import { User } from "./User";
 
 @Entity()
-@Unique(["dateOfChange", "user"])
 export class Weight {
 
   @PrimaryGeneratedColumn()
