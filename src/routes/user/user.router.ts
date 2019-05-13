@@ -4,6 +4,7 @@ import { Router } from "express";
 import { Request, Response } from "express";
 import { getRepository } from "typeorm";
 import { User } from "../../database/entities/User";
+import { Weight } from "../../database/entities/Weight";
 import * as userUtil from "../../utils/user.util";
 import * as mw from "./user.middleware";
 
@@ -172,6 +173,37 @@ router.post("/session", async (req, res) => {
 router.put("/edit/:id", async (req, res) => {
   try {
     const { id } = req.params;
+    const user = await getRepository(User).findOne({ id });
+
+    if (user.weightKg !== req.body.weightKg
+      || user.weightLbs !== req.body.weightLbs) {
+
+      const existingWeight = await getRepository(Weight).findOne({where: {
+        userId: id,
+        dateOfChange: req.body.dateOfChange
+      }});
+
+      if (existingWeight) {
+        await getRepository(Weight)
+          .createQueryBuilder("weight")
+          .update(Weight)
+          .set({
+            dateOfChange: req.body.dateOfChange,
+            weightKg: req.body.weightKg,
+            weightLbs: req.body.weightLbs
+          })
+          .where(`userId = ${id}`)
+          .execute();
+      } else {
+        await getRepository(Weight).save({
+          user: id,
+          dateOfChange: req.body.dateOfChange,
+          weightKg: req.body.weightKg,
+          weightLbs: req.body.weightLbs
+        });
+      }
+    }
+
     req.body.bmi = await userUtil.getBMI(req.body.weightKg, req.body.heightCm);
     req.body.bmiClass = await userUtil.getBMIClass(req.body.bmi);
     const result = await getRepository(User)
@@ -180,11 +212,11 @@ router.put("/edit/:id", async (req, res) => {
       .set({ ...req.body })
       .where(`id = ${id}`)
       .execute();
-    const user = await getRepository(User).findOne({ id });
+
     req.session.user = user;
     const data = {
       status: 200,
-      message: "Successfully updated consumed",
+      message: "Successfully updated consumed"
     };
     res.status(data.status).json(data);
   } catch (err) {

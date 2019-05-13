@@ -7,13 +7,13 @@ export const getBMI = async (weightKg: number, heightCm: number): Promise<number
 export const getBMIClass = async (bmi: number): Promise<string> => {
   switch (true) {
     case (bmi >= 30):
-      return 'Obese';
+      return "Obese";
     case (bmi >= 25):
-      return 'Overweight';
+      return "Overweight";
     case (bmi <= 18.5):
-      return 'Underweight';
+      return "Underweight";
     default:
-      return 'Normal';
+      return "Normal";
   }
 };
 

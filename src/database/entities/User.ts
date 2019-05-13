@@ -2,6 +2,7 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Consumed } from "./Consumed";
 import { Favorite } from "./Favorite";
 import { Meal } from "./Meal";
+import { Weight } from "./Weight";
 
 @Entity()
 export class User {
@@ -69,6 +70,9 @@ export class User {
   @Column({ nullable: true })
   endDate: string;
 
+  @Column({ nullable: true })
+  startDate: string;
+
   @Column("decimal", { precision: 7, scale: 2 })
   choPerDay: number;
 
@@ -98,5 +102,8 @@ export class User {
 
   @OneToMany(() => Meal, (meal: Meal) => meal.user)
   meal: Meal[];
+
+  @OneToMany(() => Weight, (weight: Weight) => weight.user)
+  weight: Weight[];
 
 }

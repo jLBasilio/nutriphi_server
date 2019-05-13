@@ -57,24 +57,21 @@ router.get("/find/:userId", async (req, res) => {
   }
 });
 
-router.get("/find/progress/:id", async (req, res) => {
+router.get("/find/progress/daily/:id", async (req, res) => {
   try {
-
     const { id } = req.params;
     const result: object[] = [];
     const dateList: string[] = [];
     const queryPromises: Array<Promise<any>> = [];
     let toFetch;
+    let date;
 
-    let date = new Date();
-    date = new Date(date.setDate(date.getDate() + 3));
-
-    for (let i = 0; i < 15; i++) {
-      date = new Date(date.setDate(date.getDate() - 1));
+    for (let i = 12; i > -3; i--) {
+      date = new Date();
+      date = new Date(date.setDate(date.getDate() - i));
       toFetch = `${date.getFullYear()}-${(date.getMonth() < 10 ? "0" : "")
         + (date.getMonth() + 1)}-${(date.getDate() < 10 ? "0" : "")
         + date.getDate()}`;
-
       queryPromises.push(
         getRepository(Consumed)
           .createQueryBuilder()
@@ -87,7 +84,6 @@ router.get("/find/progress/:id", async (req, res) => {
     }
 
     const logs = await Promise.all(queryPromises);
-
     logs.forEach((log, index) => (
       result.push({
         date: dateList[index],
@@ -99,6 +95,52 @@ router.get("/find/progress/:id", async (req, res) => {
       status: 200,
       message: "Successfully fetched progress",
       data: result
+    };
+    res.status(data.status).json(data);
+  } catch (err) {
+    res.status(err.status).json(err);
+  }
+});
+
+router.get("/find/progress/class/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const result = await getRepository(Consumed)
+      .createQueryBuilder("consumed")
+      .leftJoin("consumed.food", "food")
+      .select([
+        "food.primaryClassification",
+        "food.secondaryClassification",
+        "consumed.dateConsumed"
+      ])
+      .where(`consumed.user = ${id}`)
+      .getMany();
+
+    const toSend: any = {};
+    let total = 0;
+
+    result.forEach((log) => {
+      const [primClass, , ] = log.food.primaryClassification.split("-");
+      if (log.food.secondaryClassification) {
+        const secClass = log.food.secondaryClassification;
+        toSend[primClass] = (toSend[primClass] || 0) + 0.5;
+        toSend[secClass] = (toSend[secClass] || 0) + 0.5;
+      } else {
+        toSend[primClass] = (toSend[primClass] || 0) + 1;
+      }
+      total += 1;
+    });
+
+    const keys = Object.keys(toSend);
+    keys.forEach((key) => (
+      toSend[key] = parseFloat(((toSend[key] / total) * 100).toFixed(2))
+    ));
+
+    const data = {
+      status: 200,
+      message: "Successfully fetched progress",
+      data: toSend
     };
     res.status(data.status).json(data);
   } catch (err) {

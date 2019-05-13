@@ -8,6 +8,7 @@ import { Meal } from "./entities/Meal";
 import { Nutrient } from "./entities/Nutrient";
 import { Session } from "./entities/Session";
 import { User } from "./entities/User";
+import { Weight } from "./entities/Weight";
 
 export const config: ConnectionOptions = {
   type: "mysql",
@@ -26,6 +27,7 @@ export const config: ConnectionOptions = {
     Nutrient,
     Favorite,
     Meal,
-    Ingredient
+    Ingredient,
+    Weight
   ]
 };

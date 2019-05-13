@@ -6,6 +6,7 @@ import foodRouter from "./food/food.router";
 import mealRouter from "./meal/meal.router";
 import nutrientRouter from "./nutrient/nutrient.router";
 import userRouter from "./user/user.router";
+import weightRouter from "./weight/weight.router";
 
 const router = Router();
 
@@ -19,5 +20,6 @@ router.use("/food", foodRouter);
 router.use("/meal", mealRouter);
 router.use("/nutrient", nutrientRouter);
 router.use("/favorite", favoriteRouter);
+router.use("/weight", weightRouter);
 
 export default router;
