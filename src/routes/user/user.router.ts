@@ -173,8 +173,17 @@ router.post("/session", async (req, res) => {
 router.put("/edit/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { dateOfChange, ...toEdit } = req.body;
     const user = await getRepository(User).findOne({ id });
+
+    req.body.bmi = await userUtil.getBMI(req.body.weightKg, req.body.heightCm);
+    req.body.bmiClass = await userUtil.getBMIClass(req.body.bmi);
+    const { dateOfChange, ...toEdit } = req.body;
+    const result = await getRepository(User)
+      .createQueryBuilder("user")
+      .update(User)
+      .set(toEdit)
+      .where(`id = ${id}`)
+      .execute();
 
     if (user.weightKg !== req.body.weightKg
       || user.weightLbs !== req.body.weightLbs) {
@@ -194,27 +203,19 @@ router.put("/edit/:id", async (req, res) => {
             weightKg: req.body.weightKg,
             weightLbs: req.body.weightLbs
           })
-          .where(`weight.userId = ${id} AND weight.dateOfChange = '${dateOfChange}'`)
+          .where(`weight.userId = ${id}
+            AND weight.dateOfChange = '${dateOfChange}'
+          `)
           .execute();
       } else {
         await getRepository(Weight).save({
           user: id,
-          dateOfChange: req.body.dateOfChange,
+          dateOfChange,
           weightKg: req.body.weightKg,
           weightLbs: req.body.weightLbs
         });
       }
     }
-
-    req.body.bmi = await userUtil.getBMI(req.body.weightKg, req.body.heightCm);
-    req.body.bmiClass = await userUtil.getBMIClass(req.body.bmi);
-
-    const result = await getRepository(User)
-      .createQueryBuilder("user")
-      .update(User)
-      .set(toEdit)
-      .where(`id = ${id}`)
-      .execute();
 
     req.session.user = user;
     const data = {
