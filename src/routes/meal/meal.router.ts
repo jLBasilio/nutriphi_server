@@ -171,18 +171,14 @@ router.put("/edit", async (req, res) => {
 
     queryPromises.push(
       getRepository(Meal)
-      .createQueryBuilder("meal")
-      .update(Meal)
-      .set({ ...mealInfo })
-      .where(`id = ${meal}`)
-      .execute()
+        .createQueryBuilder("meal")
+        .update(Meal)
+        .set({ ...mealInfo })
+        .where(`id = ${meal}`)
+        .execute()
     );
-
-    try {
-      await Promise.all(queryPromises);
-    } catch (err) {
-      console.log(err);
-    }
+  
+    await Promise.all(queryPromises);
     const data = {
       status: 200,
       message: "Successfully updated meal"
