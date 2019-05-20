@@ -210,8 +210,6 @@ router.post("/rec", async (req, res) => {
         .getMany();
     }
 
-    console.log(result)
-
     const data = {
       status: 200,
       message: "Successfully fetched recommended",

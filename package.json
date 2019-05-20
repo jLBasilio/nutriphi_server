@@ -6,7 +6,7 @@
   "scripts": {
     "setup": "mysql -u root -p < src/database/setup.sql",
     "watch-ts": "tsc -w",
-    "watch-node": "nodemon dist/app.js",
+    "watch-node": "nodemon build/app.js",
     "start": "concurrently -k -p \"[{name}]\" -n \"TypeScript, Node\" -c \"yello.bold, cyan.bold\" \"yarn run watch-ts\" \"yarn run watch-node\""
   },
   "author": "jLBasilio",
@@ -19,6 +19,7 @@
     "@types/express-session": "^1.15.11",
     "@types/morgan": "^1.7.35",
     "@types/node": "^10.12.18",
+    "@types/serve-favicon": "^2.2.30",
     "bcrypt": "^3.0.4",
     "body-parser": "~1.0.0",
     "concurrently": "^4.1.0",
@@ -32,6 +33,7 @@
     "mysql": "^2.16.0",
     "nodemon": "^1.14.3",
     "reflect-metadata": "^0.1.12",
+    "serve-favicon": "^2.5.0",
     "static-favicon": "~1.0.0",
     "tslint": "^5.12.0",
     "typeorm": "^0.2.11",

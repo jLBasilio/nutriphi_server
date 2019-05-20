@@ -6,6 +6,7 @@ import * as session from "express-session";
 import * as logger from "morgan";
 import * as path from "path";
 import "reflect-metadata";
+import * as favicon from "serve-favicon";
 import { createConnection, getConnection } from "typeorm";
 import { TypeormStore } from "typeorm-store";
 import * as db from "./database/config";
@@ -30,14 +31,15 @@ createConnection(db.config).then(async (connection) => {
   app.use(cors());
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded());
-  app.use(express.static(path.join(__dirname, "public")));
 
   app.use("/api", router);
-  app.use("*", (req, res, next) => {
-    let err: any;
-    err = new Error();
+  app.use("/", express.static(path.join(__dirname, "build")));
+  app.use(favicon(path.join(__dirname, "build", "favicon.ico")));
+
+  app.use("*", (req, res) => {
+    const err: any = new Error();
     err.status = 404;
-    res.send(err.status + ". API does not exist.");
+    res.send(`Error ${err.status}. Page does not exist.`);
   });
 
   app.set("port", process.env.PORT || 3001);
