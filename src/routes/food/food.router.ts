@@ -179,6 +179,50 @@ router.get("/search/:foodClass", async (req, res) => {
   }
 });
 
+router.post("/rec", async (req, res) => {
+  try {
+    let {
+      choLeft,
+      proLeft,
+      fatLeft
+    } = req.body;
+
+    choLeft = parseFloat(choLeft);
+    proLeft = parseFloat(proLeft);
+    fatLeft = parseFloat(fatLeft);
+
+    let result;
+    result = await getRepository(Food)
+      .createQueryBuilder()
+      .where(`(${choLeft - 12} <= choPerExchange AND choPerExchange <= ${choLeft + 12})
+        OR  (${proLeft - 12} <= proPerExchange AND proPerExchange <= ${proLeft + 12})
+        OR  (${fatLeft - 5} <= fatPerExchange AND fatPerExchange <= ${fatLeft + 5})
+      `)
+      .orderBy(`rand()`)
+      .limit(5)
+      .getMany();
+
+    if (!result.length) {
+      result = await getRepository(Food)
+        .createQueryBuilder()
+        .orderBy(`rand()`)
+        .limit(5)
+        .getMany();
+    }
+
+    console.log(result)
+
+    const data = {
+      status: 200,
+      message: "Successfully fetched recommended",
+      data: result
+    };
+    res.status(data.status).json(data);
+  } catch (err) {
+    res.status(err.status).json(err);
+  }
+});
+
 router.post("/add", async (req, res) => {
   try {
     const result = await getRepository(Food).save(req.body);
