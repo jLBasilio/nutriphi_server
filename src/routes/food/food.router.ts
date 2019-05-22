@@ -192,24 +192,30 @@ router.post("/rec", async (req, res) => {
     fatLeft = parseFloat(fatLeft);
 
     let result;
+    let addtl: any = [];
+
     result = await getRepository(Food)
       .createQueryBuilder()
-      .where(`(${choLeft - 12} <= choPerExchange AND choPerExchange <= ${choLeft + 12})
+      .where(`((${choLeft - 12} <= choPerExchange AND choPerExchange <= ${choLeft + 12})
         OR  (${proLeft - 12} <= proPerExchange AND proPerExchange <= ${proLeft + 12})
-        OR  (${fatLeft - 5} <= fatPerExchange AND fatPerExchange <= ${fatLeft + 5})
+        OR  (${fatLeft - 5} <= fatPerExchange AND fatPerExchange <= ${fatLeft + 5}))
+        AND primaryClassification NOT LIKE '%free%'
       `)
       .orderBy(`rand()`)
       .limit(5)
       .getMany();
 
-    if (!result.length) {
-      result = await getRepository(Food)
+    if (result.length < 5) {
+      const toGet = 5 - result.length;
+      addtl = await getRepository(Food)
         .createQueryBuilder()
+        .where("primaryClassification NOT LIKE '%free%'")
         .orderBy(`rand()`)
-        .limit(5)
+        .limit(toGet)
         .getMany();
     }
 
+    result = [...result, ...addtl];
     const data = {
       status: 200,
       message: "Successfully fetched recommended",
