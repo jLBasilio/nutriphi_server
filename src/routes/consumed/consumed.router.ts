@@ -211,7 +211,7 @@ router.post("/add/meal", async (req, res) => {
 router.put("/edit/:consumedId", async (req, res) => {
   try {
     const { consumedId } = req.params;
-    const { userId, id, ...logInfo } = JSON.parse(JSON.stringify(req.body).replace(/consumed_/g, ""));
+    const { prevPeriod, userId, id, ...logInfo } = JSON.parse(JSON.stringify(req.body).replace(/consumed_/g, ""));
     const food = await getRepository(Food).findOne(logInfo.foodId);
     const totalKcal = consumedUtil.getKcal(food, logInfo.gramsmlConsumed);
     const result = await getRepository(Consumed)
