@@ -66,8 +66,8 @@ router.get("/find/progress/daily/:id", async (req, res) => {
     let toFetch;
     let date;
 
-    // for (let i = 13; i > -1; i--) {    // dev
-    for (let i = 12; i > -2; i--) {       // prod
+    for (let i = 13; i > -1; i--) {    // dev
+    // for (let i = 12; i > -2; i--) {       // prod
       date = new Date();
       date = new Date(date.setDate(date.getDate() - i));
       toFetch = `${date.getFullYear()}-${(date.getMonth() < 10 ? "0" : "")
