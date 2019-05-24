@@ -188,16 +188,12 @@ router.put("/edit/:id", async (req, res) => {
     if (user.weightKg !== req.body.weightKg
       || user.weightLbs !== req.body.weightLbs) {
 
-      console.log("Date of change: ", dateOfChange);
       const existingWeight = await getRepository(Weight)
         .createQueryBuilder()
         .where(`userId = ${id} AND dateOfChange = ${dateOfChange}`)
         .getOne();
 
-      console.log("User Id: ", id);
       if (existingWeight) {
-        console.log("EDIT WEIGHT");
-        console.log(existingWeight);
         await getRepository(Weight)
           .createQueryBuilder("weight")
           .update(Weight)
@@ -210,7 +206,6 @@ router.put("/edit/:id", async (req, res) => {
           `)
           .execute();
       } else {
-        console.log("NEW WEIGHT");
         await getRepository(Weight).save({
           user: id,
           dateOfChange,
