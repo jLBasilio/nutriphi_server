@@ -127,7 +127,10 @@ router.get("/find/progress/class/:id", async (req, res) => {
         primClass = "bev";
       }
       if (log.food.secondaryClassification) {
-        const secClass = log.food.secondaryClassification;
+        let secClass = log.food.secondaryClassification;
+        if (secClass === "beverage") {
+          secClass = "bev";
+        }
         toSend[primClass] = (toSend[primClass] || 0) + 0.5;
         toSend[secClass] = (toSend[secClass] || 0) + 0.5;
       } else {
