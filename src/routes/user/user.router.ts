@@ -198,6 +198,7 @@ router.put("/edit/:id", async (req, res) => {
 
       if (existingWeight) {
         console.log("EDIT WEIGHT");
+        console.log(existingWeight);
         await getRepository(Weight)
           .createQueryBuilder("weight")
           .update(Weight)
