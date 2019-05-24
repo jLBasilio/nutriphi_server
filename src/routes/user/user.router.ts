@@ -190,7 +190,7 @@ router.put("/edit/:id", async (req, res) => {
 
       const existingWeight = await getRepository(Weight)
         .createQueryBuilder()
-        .where(`userId = ${id} AND dateOfChange = ${dateOfChange}`)
+        .where(`userId = ${id} AND dateOfChange = '${dateOfChange}'`)
         .getOne();
 
       if (existingWeight) {
@@ -201,9 +201,7 @@ router.put("/edit/:id", async (req, res) => {
             weightKg: req.body.weightKg,
             weightLbs: req.body.weightLbs
           })
-          .where(`weight.userId = ${id}
-            AND weight.dateOfChange = '${dateOfChange}'
-          `)
+          .where(`userId = ${id} dateOfChange = '${dateOfChange}'`)
           .execute();
       } else {
         await getRepository(Weight).save({
