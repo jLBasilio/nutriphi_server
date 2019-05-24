@@ -125,11 +125,15 @@ router.get("/find/progress/class/:id", async (req, res) => {
       let [primClass, , ] = log.food.primaryClassification.split("-");
       if (primClass === "beverage") {
         primClass = "bev";
+      } else if (primClass === "vegetable") {
+        primClass = "veg";
       }
       if (log.food.secondaryClassification) {
         let secClass = log.food.secondaryClassification;
         if (secClass === "beverage") {
           secClass = "bev";
+        } else if (secClass === "veg") {
+          secClass = "veg";
         }
         toSend[primClass] = (toSend[primClass] || 0) + 0.5;
         toSend[secClass] = (toSend[secClass] || 0) + 0.5;
