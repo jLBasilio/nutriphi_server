@@ -196,6 +196,7 @@ router.put("/edit/:id", async (req, res) => {
         }
       });
 
+      console.log("User Id: ", id)
       if (existingWeight) {
         console.log("EDIT WEIGHT");
         console.log(existingWeight);
