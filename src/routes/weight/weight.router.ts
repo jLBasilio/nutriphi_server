@@ -19,6 +19,8 @@ router.get("/find/:id", async (req, res) => {
       .orderBy("weight.dateOfChange", "ASC")
       .getMany();
 
+    console.log(result);
+
     const data = {
       status: 200,
       message: "Successfully fetched weight history",
