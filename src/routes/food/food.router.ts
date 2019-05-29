@@ -197,7 +197,7 @@ router.post("/rec", async (req, res) => {
       .createQueryBuilder()
       .where(`((choPerExchange <= ${choLeft})
         OR  (proPerExchange <= ${proLeft})
-        OR  (fatPerExchange AND fatPerExchange <= ${fatLeft}))
+        OR  (fatPerExchange <= ${fatLeft}))
         AND primaryClassification NOT LIKE '%free%'
       `)
       .orderBy(`rand()`)
