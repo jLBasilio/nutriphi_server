@@ -195,9 +195,9 @@ router.post("/rec", async (req, res) => {
 
     result = await getRepository(Food)
       .createQueryBuilder()
-      .where(`((${choLeft - 120} <= choPerExchange AND choPerExchange <= ${choLeft + 50})
-        OR  (${proLeft - 120} <= proPerExchange AND proPerExchange <= ${proLeft + 50})
-        OR  (${fatLeft - 50} <= fatPerExchange AND fatPerExchange <= ${fatLeft + 25}))
+      .where(`((${choLeft - 120} <= choPerExchange AND choPerExchange <= ${choLeft})
+        OR  (${proLeft - 120} <= proPerExchange AND proPerExchange <= ${proLeft})
+        OR  (${fatLeft - 50} <= fatPerExchange AND fatPerExchange <= ${fatLeft}))
         AND primaryClassification NOT LIKE '%free%'
       `)
       .orderBy(`rand()`)
