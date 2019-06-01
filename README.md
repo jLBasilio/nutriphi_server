@@ -1,6 +1,6 @@
 # nutriphi_server
 
-Server: https://github.com/jLBasilio/nutriphi_client
+Client: https://github.com/jLBasilio/nutriphi_client
 
 ### Prerequisites
 
