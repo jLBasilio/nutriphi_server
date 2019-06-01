@@ -7,7 +7,8 @@ Client: https://github.com/jLBasilio/nutriphi_client
 A system which has the following:
 1. git
 2. yarn
-3. Node ^10.15
+3. MySQL
+4. Node ^10.15
 
 ### Steps
 1. Clone this repository
@@ -22,7 +23,11 @@ cd nutriphi_server
 ```
 yarn
 ```
-4. Start
+4. Initialize database
+```
+yarn setup && yarn seed
+```
+5. Start
 ```
 yarn start
 ```
