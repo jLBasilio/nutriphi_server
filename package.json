@@ -22,7 +22,7 @@
     "@types/morgan": "^1.7.35",
     "@types/node": "^10.12.18",
     "@types/serve-favicon": "^2.2.30",
-    "bcrypt": "^3.0.4",
+    "bcrypt": "^5.0.0",
     "body-parser": "~1.0.0",
     "concurrently": "^4.1.0",
     "cors": "^2.8.4",
